@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?scenebuilder-preview-i18n-resource ../bundle/bundle.properties?>
+<?scenebuilder-stylesheet ../css/standard.css?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane fx:id="window" minHeight="600.0" minWidth="805.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.capgemini.starterkit.javafx.imageviewer.controller.ImageViewController">
+   <children>
+      <MenuBar fx:id="menuBar" cache="true" cacheHint="QUALITY" nodeOrientation="LEFT_TO_RIGHT" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="%menu.file">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#chooseDirectory" text="%file.open" />
+                  <MenuItem mnemonicParsing="false" onAction="#closeAppAction" text="%file.exit" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="%menu.language">
+            <items>
+              <MenuItem fx:id="menuLanguagePolish" mnemonicParsing="false" onAction="#selectLanguageAction" text="%language.pl">
+                     <graphic>
+                        <ImageView fitHeight="17.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/flag-pl.jpg" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuItem>
+                  <MenuItem fx:id="menuLanguageEnglish" mnemonicParsing="false" onAction="#selectLanguageAction" text="%language.en">
+                     <graphic>
+                        <ImageView fitHeight="17.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/flag-gb.jpg" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuItem>
+            </items>
+          </Menu>
+        </menus>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+      </MenuBar>
+      <SplitPane dividerPositions="0.2519" layoutY="25.0" minHeight="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+        <items>
+          <AnchorPane minHeight="600.0" minWidth="200.0">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+               <children>
+                  <TableView fx:id="resultTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="nameColumn" editable="false" minWidth="-1.0" prefWidth="200.0" text="%filename" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="600.0" minWidth="600.0">
+               <children>
+                  <Pane fx:id="imageBounds" prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <ImageView fx:id="imageViewPort" fitHeight="600.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+                           <viewport>
+                              <Rectangle2D height="1024.0" width="1024.0" />
+                           </viewport>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</AnchorPane>
