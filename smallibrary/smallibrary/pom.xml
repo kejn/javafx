@@ -1,10 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.capgemini.starterkit.javafx</groupId>
-  <artifactId>imageviewer</artifactId>
+  <artifactId>smallibrary</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>imageviewer</name>
-  <description>Simple app to view images from selected directory</description>
+  <name>smallibrary</name>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -30,6 +29,11 @@
       <scope>test</scope>
       <version>4.12</version>
     </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20141113</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -40,7 +44,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.capgemini.starterkit.javafx.imageviewer.Startup</mainClass>
+              <mainClass>com.capgemini.starterkit.javafx.smallibrary.Startup</mainClass>
               <addClasspath>true</addClasspath>
             </manifest>
           </archive>
@@ -48,5 +52,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

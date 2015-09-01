@@ -43,7 +43,7 @@ public class ImageSearch {
 
 	@Override
 	public String toString() {
-		return "ImageSearch [name=" + dirPath + "]";
+		return "ImageSearch [name=" + dirPath + ", result=" + result + "]";
 	}
 
 }
