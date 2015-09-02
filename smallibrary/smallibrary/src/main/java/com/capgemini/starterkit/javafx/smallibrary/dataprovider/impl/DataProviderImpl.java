@@ -56,6 +56,7 @@ public class DataProviderImpl implements DataProvider {
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			LOG.error("Make sure you have launched the server instance!");
 			return null;
 		} finally {
 			if (connection != null) {
@@ -107,7 +108,9 @@ public class DataProviderImpl implements DataProvider {
 			for (int i = 0; i < names.length - 1; i++) {
 				firstName.append(names[i] + " ");
 			}
-			firstName.deleteCharAt(firstName.length() - 1);
+			if (!firstName.toString().isEmpty()) {
+				firstName.deleteCharAt(firstName.length() - 1);
+			}
 			lastName = names[names.length - 1];
 			authorsToBeAdded.add(new AuthorVO(null, firstName.toString(), lastName));
 		}
@@ -119,24 +122,17 @@ public class DataProviderImpl implements DataProvider {
 		LOG.debug(bookJSON);
 
 		try {
-			// Create connection
 			URL url = new URL(URL_BOOKS + "book");
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
-
-			connection.setRequestProperty("Content-Length", Integer.toString(bookJSON.toString().length()));
-			connection.setRequestProperty("Content-Language", "pl-PL");
-
-			connection.setUseCaches(false);
+			connection.setDefaultUseCaches(false);
 			connection.setDoOutput(true);
 
-			// Send request
 			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 			wr.writeBytes(bookJSON.toString());
 			wr.close();
 
-			// Get Response
 			BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
 			String line;
 			while ((line = rd.readLine()) != null) {
@@ -171,6 +167,28 @@ public class DataProviderImpl implements DataProvider {
 		result = new BookVO(bookId, bookTitle, bookAuthors);
 		LOG.debug("Leaving addBook()");
 		return result;
+	}
+
+	@Override
+	public Boolean deleteBook(Long id) {
+		LOG.debug("Entering deleteBook(" + id + ")");
+		HttpURLConnection connection = null;
+		try {
+			URL url = new URL(URL_BOOKS + "book/" + id);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("DELETE");
+			// DO NOT DELETE LINE BELOW!
+			LOG.debug("Response code: " + connection.getResponseCode());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Boolean.FALSE;
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+		}
+		LOG.debug("Leaving deleteBook()");
+		return Boolean.TRUE;
 	}
 
 }

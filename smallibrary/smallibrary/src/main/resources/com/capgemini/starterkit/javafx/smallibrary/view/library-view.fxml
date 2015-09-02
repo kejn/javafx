@@ -2,6 +2,7 @@
 
 <?scenebuilder-preview-i18n-resource ../bundle/bundle.properties?>
 <?scenebuilder-stylesheet ../css/standard.css?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -28,16 +29,17 @@
          <TextField fx:id="authorsField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       </children>
    </GridPane>
-   <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="141.0" prefHeight="25.0" prefWidth="275.0" spacing="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="213.0" AnchorPane.topAnchor="141.0">
+   <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="141.0" prefHeight="25.0" prefWidth="300.0" spacing="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="188.0" AnchorPane.topAnchor="141.0">
       <children>
-        <Button fx:id="searchButton" defaultButton="true" mnemonicParsing="false" onAction="#searchButtonAction" text="%button.search" HBox.hgrow="NEVER" />
-         <Button fx:id="addButton" defaultButton="true" mnemonicParsing="false" onAction="#addButtonAction" text="%button.add" HBox.hgrow="NEVER" />
+        <Button fx:id="searchButton" defaultButton="true" mnemonicParsing="false" onAction="#searchButtonAction" text="%button.search" textAlignment="CENTER" HBox.hgrow="NEVER" />
+         <Button fx:id="addButton" defaultButton="true" mnemonicParsing="false" onAction="#addButtonAction" text="%button.add" textAlignment="CENTER" HBox.hgrow="NEVER" />
+         <Button fx:id="deleteButton" defaultButton="true" mnemonicParsing="false" onAction="#deleteButtonAction" text="%button.delete" textAlignment="CENTER" />
       </children>
    </HBox>
   <TableView fx:id="resultTable" layoutX="14.0" layoutY="186.0" prefHeight="200.0" prefWidth="474.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="186.0">
     <columns>
-      <TableColumn fx:id="titleColumn" minWidth="210.0" prefWidth="210.0" text="%column.title" />
-      <TableColumn fx:id="authorsColumn" minWidth="260.0" prefWidth="260.0" text="%column.authors" />
+      <TableColumn fx:id="titleColumn" minWidth="260.0" prefWidth="260.0" text="%column.title" />
+      <TableColumn fx:id="authorsColumn" minWidth="210.0" prefWidth="210.0" text="%column.authors" />
     </columns>
   </TableView>
    <Label fx:id="progressLabel" alignment="CENTER_RIGHT" layoutX="331.0" layoutY="145.0" prefHeight="17.0" prefWidth="157.0" text="" textAlignment="RIGHT" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="145.0" />

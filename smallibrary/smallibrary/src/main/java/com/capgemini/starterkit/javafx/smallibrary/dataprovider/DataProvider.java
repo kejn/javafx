@@ -13,4 +13,6 @@ public interface DataProvider {
 
 	BookVO addBook(String title, String authors) throws InterruptedException;
 
+	Boolean deleteBook(Long id);
+
 }

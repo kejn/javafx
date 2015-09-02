@@ -50,6 +50,9 @@ public class BookSearchController {
 	private Button addButton;
 
 	@FXML
+	private Button deleteButton;
+
+	@FXML
 	private Label progressLabel;
 
 	@FXML
@@ -83,6 +86,7 @@ public class BookSearchController {
 		searchButton.disableProperty().bind(titleField.textProperty().isEmpty());
 		addButton.disableProperty()
 				.bind(Bindings.or(titleField.textProperty().isEmpty(), authorsField.textProperty().isEmpty()));
+		deleteButton.disableProperty().bind(resultTable.selectionModelProperty().get().selectedItemProperty().isNull());
 		progressLabel.setVisible(false);
 		LOG.debug("form initialized");
 	}
@@ -112,6 +116,9 @@ public class BookSearchController {
 			@Override
 			protected void succeeded() {
 				LOG.debug("searchButtonAction succeeded() called");
+				if (getValue() == null) {
+					return;
+				}
 				model.setResult(new ArrayList<BookVO>(getValue()));
 				resultTable.getSortOrder().clear();
 			}
@@ -148,8 +155,11 @@ public class BookSearchController {
 					return;
 				}
 				result.add(new BookVO(getValue()));
-				// model.setResult(result);
-				resultTable.getSortOrder().clear();
+			}
+
+			@Override
+			protected void failed() {
+				LOG.debug("addButtonAction failed() called");
 			}
 
 		};
@@ -162,4 +172,41 @@ public class BookSearchController {
 		thread.start();
 	}
 
+	@FXML
+	public void deleteButtonAction() {
+		BookVO bookToDelete = resultTable.getSelectionModel().getSelectedItem();
+		Task<Boolean> backgroundTask = new Task<Boolean>() {
+
+			@Override
+			protected Boolean call() throws Exception {
+				LOG.debug("deleteButtonAction call() called");
+				Boolean result = dataProvider.deleteBook(bookToDelete.getId());
+				return result;
+			}
+
+			@Override
+			protected void succeeded() {
+				LOG.debug("deleteButtonAction succeeded() called");
+				List<BookVO> result = model.getResult();
+				if (getValue().equals(Boolean.FALSE)) {
+					return;
+				}
+				result.remove(bookToDelete);
+				resultTable.getSelectionModel().clearSelection();
+			}
+
+			@Override
+			protected void failed() {
+				LOG.debug("deleteButtonAction failed() called");
+			}
+
+		};
+
+		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
+		backgroundTask.setOnSucceeded(event -> progressLabel.textProperty().unbind());
+
+		Thread thread = new Thread(backgroundTask);
+		thread.setDaemon(true);
+		thread.start();
+	}
 }
