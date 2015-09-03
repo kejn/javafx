@@ -25,22 +25,13 @@ public class DataProviderImpl implements DataProvider {
 
 	private static final Logger LOG = Logger.getLogger(DataProviderImpl.class);
 
-	/*
-	 * REV: lepiej w czytac z pliku konfiguracyjnego
-	 */
 	private final String URL_BOOKS = "http://localhost:9721/workshop/rest/books/";
 
-	/*
-	 * REV: wynik nie powinien byc przechowywany jako pole w klasie
-	 */
 	private Collection<BookVO> books = new ArrayList<>();
 
 	public DataProviderImpl() {
 	}
 
-	/*
-	 * REV: synchronizacja nie jest potrzebna, jesli nie przechowujesz wynikow jako pola w klasie
-	 */
 	@Override
 	public synchronized Collection<BookVO> findBooks(String titlePrefix) {
 		LOG.debug("Entering findBooks()");
@@ -66,15 +57,8 @@ public class DataProviderImpl implements DataProvider {
 			}
 			reader.close();
 		} catch (Exception e) {
-			/*
-			 * REV: to nie jest fajne, mozesz przekazac wyjatek przy wywolaniu loggera
-			 * log.error("message", e");
-			 */
 			e.printStackTrace();
 			LOG.error("Make sure you have launched the server instance!");
-			/*
-			 * REV: lepiej rzucic wyjatek i wyswietlic blad w GUI
-			 */
 			return null;
 		} finally {
 			if (connection != null) {
@@ -115,15 +99,9 @@ public class DataProviderImpl implements DataProvider {
 		LOG.debug("Entering addBook(" + title + "," + authors + ")");
 
 		if (title == null || authors == null) {
-			/*
-			 * REV: raczej IllegalArgumentException
-			 */
 			throw new InterruptedException("title or authors fields empty!");
 		}
 
-		/*
-		 * REV: ciezkie parsowanie stringa, lepiej przechowywac autorow jako kolekcje
-		 */
 		Set<AuthorVO> authorsToBeAdded = new HashSet<>();
 		for (String author : authors.split(",")) {
 			String[] names = author.split("\\s+");
@@ -157,9 +135,6 @@ public class DataProviderImpl implements DataProvider {
 			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 			StringEntity bookTo = new StringEntity(bookJSON.toString(), "UTF-8");
 			bookTo.writeTo(wr);
-			/*
-			 * REV: zamykanie powinno byc w bloku finally
-			 */
 			wr.close();
 
 			InputStream inputStream = connection.getInputStream();
@@ -168,9 +143,6 @@ public class DataProviderImpl implements DataProvider {
 			while ((line = rd.readLine()) != null) {
 				response.append(line);
 			}
-			/*
-			 * REV: zamykanie powinno byc w bloku finally
-			 */
 			rd.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -213,9 +185,6 @@ public class DataProviderImpl implements DataProvider {
 			// DO NOT DELETE LINE BELOW!
 			LOG.debug("Response code: " + connection.getResponseCode());
 		} catch (Exception e) {
-			/*
-			 * REV: uzywaj loggera
-			 */
 			e.printStackTrace();
 			return Boolean.FALSE;
 		} finally {

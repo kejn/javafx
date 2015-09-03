@@ -80,14 +80,8 @@ public class BookSearchController {
 
 	private void initializeForm() {
 		titleField.textProperty().bindBidirectional(model.titleProperty());
-		/*
-		 * REV: mozna ustawic w fxmlu
-		 */
 		titleField.setPromptText(resources.getString("title.placeholder"));
 		authorsField.textProperty().bindBidirectional(model.authorProperty());
-		/*
-		 * REV: mozna ustawic w fxmlu
-		 */
 		authorsField.setPromptText(resources.getString("authors.placeholder"));
 		searchButton.disableProperty().bind(titleField.textProperty().isEmpty());
 		addButton.disableProperty()
@@ -131,10 +125,6 @@ public class BookSearchController {
 
 		};
 
-		/*
-		 * REV: Lepiej ustawic property visible w succeeded/failed
-		 * Najlepiej, gdy bindingi sa stale przez cale zycie kontrolera - ulatwia to debugowanie
-		 */
 		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
 		backgroundTask.setOnSucceeded(event -> {
 			progressLabel.textProperty().unbind();
@@ -174,9 +164,6 @@ public class BookSearchController {
 
 		};
 
-		/*
-		 * REV: j.w.
-		 */
 		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
 		backgroundTask.setOnSucceeded(event -> progressLabel.textProperty().unbind());
 
@@ -215,9 +202,6 @@ public class BookSearchController {
 
 		};
 
-		/*
-		 * REV: j.w
-		 */
 		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
 		backgroundTask.setOnSucceeded(event -> progressLabel.textProperty().unbind());
 

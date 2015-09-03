@@ -58,9 +58,6 @@ public class BookSearch {
 		return "PersonSearch [name=" + title + "author=" + author + ", result=" + result + "]";
 	}
 
-	/*
-	 * REV: do usuniecia
-	 */
 	public Object getAuthors() {
 		// TODO Auto-generated method stub
 		return null;
