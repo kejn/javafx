@@ -1,6 +1,10 @@
 package com.capgemini.starterkit.javafx.imageviewer.dataprovider.data;
 
 public class ImageFileVO {
+
+	/*
+	 * REV: nie ma potrzeby tworzenia klasy VO tylko dla pojedynczego stringa
+	 */
 	private String name;
 
 	public ImageFileVO(String name) {

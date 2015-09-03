@@ -39,6 +39,9 @@ public class ImageViewController {
 
 	private static final Logger LOG = Logger.getLogger(ImageViewController.class);
 
+	/*
+	 * REV: te stale powinny byc uzyte w klasie Startup
+	 */
 	private static final String FXMLFILE = "/com/capgemini/starterkit/javafx/imageviewer/view/image-view.fxml";
 
 	private static final String BUNDLEFILE = "com/capgemini/starterkit/javafx/imageviewer/bundle/bundle";
@@ -107,6 +110,9 @@ public class ImageViewController {
 
 	private void initializeResultTable() {
 		nameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
+		/*
+		 * REV: lepiej zdefiniowac w FXMLu
+		 */
 		nameColumn.setMinWidth(200.0);
 
 		resultTable.itemsProperty().bind(model.resultProperty());
@@ -125,6 +131,10 @@ public class ImageViewController {
 				imageViewPort.setImage(image);
 			}
 		});
+		/*
+		 * REV: lepiej zrobic to bindem
+		 * nameColumn.maxWidthProperty().bind(resultTable.widthProperty().subtract(5));
+		 */
 		resultTable.widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -155,6 +165,11 @@ public class ImageViewController {
 			menuLanguageEnglish.setDisable(true);
 			menuLanguagePolish.setDisable(false);
 		}
+		/*
+		 * REV: to jest troche niebezpieczne
+		 * FXMLLoader tworzy nowe instancje obiektow zdefiniowanych w fxmlu (w tym tego kontrolera)
+		 * Przy bardziej skomplikowanych konfiguracjach kontroler-model moze to prowadzic do memory leakow.
+		 */
 		window.getScene()
 				.setRoot(FXMLLoader.load(getClass().getResource(FXMLFILE), ResourceBundle.getBundle(BUNDLEFILE)));
 	}
@@ -164,6 +179,10 @@ public class ImageViewController {
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(resources.getString("dirchoose.title"));
 		chooser.setInitialDirectory(new File(model.getDirPath()));
+		/*
+		 * REV: dialog wyboru katalogu powinien byc modalny w stosunku do glownego okna
+		 * showDialog(primaryStage)
+		 */
 		File file = chooser.showDialog(null);
 		if (file != null) {
 			model.setDirPath(file.getPath());

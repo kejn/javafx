@@ -21,6 +21,9 @@ public class Startup extends Application {
 		 * Set the default locale based on the '--lang' startup argument.
 		 */
 		String langCode = getParameters().getNamed().get("lang");
+		/*
+		 * REV: uzywaj loggera
+		 */
 		System.out.println("langCode at startup: " + langCode);
 		if (langCode != null && !langCode.isEmpty()) {
 			Locale.setDefault(Locale.forLanguageTag(langCode));

@@ -14,6 +14,9 @@ public class DataProviderImpl implements DataProvider {
 
 	private static final Logger LOG = Logger.getLogger(DataProviderImpl.class);
 
+	/*
+	 * REV: lista wynikowa nie powinna byc przechowywana jako pole w klasie
+	 */
 	private Collection<ImageFileVO> images = new ArrayList<>();
 
 	public DataProviderImpl() {
@@ -28,6 +31,9 @@ public class DataProviderImpl implements DataProvider {
 		Collection<File> listOfFiles = new ArrayList<>(Arrays.asList(folder.listFiles()));
 		LOG.debug("SIZE: " + listOfFiles.size());
 
+		/*
+		 * REV: lepiej uzyc FilenameFilter
+		 */
 		for (File file : listOfFiles) {
 			if (file.isFile() && isImage(file.getName())) {
 				images.add(new ImageFileVO(file.getName()));
