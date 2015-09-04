@@ -136,6 +136,7 @@ public class ImageViewController {
 				imageViewPort.setImage(image);
 			}
 		});
+		// nameColumn.minWidthProperty().bind(resultTable.widthProperty().subtract(5));
 		// nameColumn.maxWidthProperty().bind(resultTable.widthProperty().subtract(5));
 		resultTable.widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
