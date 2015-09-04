@@ -2,6 +2,8 @@ package com.capgemini.starterkit.javafx.smallibrary.dataprovider.impl;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.DataProvider;
@@ -25,10 +28,35 @@ public class DataProviderImpl implements DataProvider {
 
 	private static final Logger LOG = Logger.getLogger(DataProviderImpl.class);
 
-	private final String URL_BOOKS = "http://localhost:9721/workshop/rest/books/";
+	private final String URL_BOOKS;
 
 	public DataProviderImpl() {
-
+		File configFile = new File("src/main/resources/com/capgemini/starterkit/javafx/smallibrary/config/config.json");
+		BufferedReader reader = null;
+		JSONObject config = null;
+		String url = null;
+		try {
+			reader = new BufferedReader(new FileReader(configFile));
+			StringBuilder builder = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+				LOG.debug(line);
+			}
+			config = new JSONObject(builder.toString());
+			url = config.getString("url");
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		} catch (JSONException e) {
+			LOG.error(e.getMessage(), e);
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+			}
+		}
+		URL_BOOKS = url;
 	}
 
 	@Override
