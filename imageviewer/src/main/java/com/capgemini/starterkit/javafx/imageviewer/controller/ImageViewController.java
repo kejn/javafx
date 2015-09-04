@@ -10,8 +10,10 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
+import com.capgemini.starterkit.javafx.imageviewer.Startup;
 import com.capgemini.starterkit.javafx.imageviewer.dataprovider.DataProvider;
 import com.capgemini.starterkit.javafx.imageviewer.dataprovider.data.ImageFileVO;
+import com.capgemini.starterkit.javafx.imageviewer.dataprovider.impl.DataProviderImpl;
 import com.capgemini.starterkit.javafx.imageviewer.model.ImageSearch;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -35,13 +37,14 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+/**
+ * Controller for viewing images.
+ *
+ * @author KNIEMCZY
+ */
 public class ImageViewController {
 
 	private static final Logger LOG = Logger.getLogger(ImageViewController.class);
-
-	private static final String FXMLFILE = "/com/capgemini/starterkit/javafx/imageviewer/view/image-view.fxml";
-
-	private static final String BUNDLEFILE = "com/capgemini/starterkit/javafx/imageviewer/bundle/bundle";
 
 	@FXML
 	private ResourceBundle resources;
@@ -92,6 +95,9 @@ public class ImageViewController {
 		model.setDirPath(System.getProperty("user.home") + "\\Pictures");
 	}
 
+	/**
+	 * Disables chosen language. By default English is chosen.
+	 */
 	private void initializeMenuLanguage() {
 		if (Locale.getDefault().equals(Locale.forLanguageTag("PL"))) {
 			menuLanguagePolish.setDisable(true);
@@ -100,14 +106,19 @@ public class ImageViewController {
 		}
 	}
 
+	/**
+	 * Sets binding to image view port.
+	 */
 	private void initializeImageViewPort() {
 		imageViewPort.fitWidthProperty().bind(imageBounds.widthProperty());
 		imageViewPort.fitHeightProperty().bind(imageBounds.heightProperty());
 	}
 
+	/**
+	 * Sets bindings to result table column.
+	 */
 	private void initializeResultTable() {
 		nameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
-		nameColumn.setMinWidth(200.0);
 
 		resultTable.itemsProperty().bind(model.resultProperty());
 		resultTable.setPlaceholder(new Label(resources.getString("table.emptyText")));
@@ -125,15 +136,18 @@ public class ImageViewController {
 				imageViewPort.setImage(image);
 			}
 		});
+		// nameColumn.maxWidthProperty().bind(resultTable.widthProperty().subtract(5));
 		resultTable.widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				nameColumn.setMaxWidth(newValue.doubleValue() - 5);
 			}
 		});
-
 	}
 
+	/**
+	 * Closes application.
+	 */
 	@FXML
 	private void closeAppAction() {
 		LOG.debug("Menu > Exit");
@@ -141,6 +155,14 @@ public class ImageViewController {
 		stage.close();
 	}
 
+	/**
+	 * Selects interface language and reloads FXML file.
+	 *
+	 * @param event
+	 *            MenuItem which was clicked describing language to be loaded.
+	 * @throws IOException
+	 *             if reloading FXML file fails.
+	 */
 	@FXML
 	private void selectLanguageAction(ActionEvent event) throws IOException {
 		MenuItem item = (MenuItem) event.getSource();
@@ -155,16 +177,19 @@ public class ImageViewController {
 			menuLanguageEnglish.setDisable(true);
 			menuLanguagePolish.setDisable(false);
 		}
-		window.getScene()
-				.setRoot(FXMLLoader.load(getClass().getResource(FXMLFILE), ResourceBundle.getBundle(BUNDLEFILE)));
+		window.getScene().setRoot(FXMLLoader.load(getClass().getResource(Startup.FXMLFILE),
+				ResourceBundle.getBundle(Startup.BUNDLEFILE)));
 	}
 
+	/**
+	 * Lets user choose directory which contains pictures.
+	 */
 	@FXML
 	private void chooseDirectory() {
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(resources.getString("dirchoose.title"));
 		chooser.setInitialDirectory(new File(model.getDirPath()));
-		File file = chooser.showDialog(null);
+		File file = chooser.showDialog(window.getScene().getWindow());
 		if (file != null) {
 			model.setDirPath(file.getPath());
 			imageViewPort.setImage(null);
@@ -181,9 +206,18 @@ public class ImageViewController {
 				+ resources.getString("app.titlesuffix");
 	}
 
+	/**
+	 * The JavaFX runtime calls this method when user chooses a directory.
+	 */
 	private void listImagesInTable() {
 		Task<Collection<ImageFileVO>> backgroundTask = new Task<Collection<ImageFileVO>>() {
 
+			/**
+			 * Calls {@link DataProviderImpl#findImages(String)} in task thread.
+			 *
+			 * @return Collection of filenames (ImageFileVO) from directory
+			 *         which are image files.
+			 */
 			@Override
 			protected Collection<ImageFileVO> call() throws Exception {
 				LOG.debug("call() called");
@@ -191,6 +225,9 @@ public class ImageViewController {
 				return result;
 			}
 
+			/**
+			 * Updates result table entries.
+			 */
 			@Override
 			protected void succeeded() {
 				LOG.debug("succeeded() called");

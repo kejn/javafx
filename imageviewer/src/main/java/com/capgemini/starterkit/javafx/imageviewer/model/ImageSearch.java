@@ -11,6 +11,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 
+/**
+ * Data displayed in the application.
+ *
+ * @author KNIEMCZY
+ */
 public class ImageSearch {
 
 	private final StringProperty dirPath = new SimpleStringProperty();

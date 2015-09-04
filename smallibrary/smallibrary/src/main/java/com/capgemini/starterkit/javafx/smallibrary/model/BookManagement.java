@@ -16,7 +16,7 @@ import javafx.collections.FXCollections;
  *
  * @author KNIEMCZY
  */
-public class BookSearch {
+public class BookManagement {
 	private final StringProperty title = new SimpleStringProperty();
 	private final StringProperty author = new SimpleStringProperty();
 	private final ListProperty<BookVO> result = new SimpleListProperty<>(

@@ -15,7 +15,7 @@ import com.capgemini.starterkit.javafx.smallibrary.dataprovider.DataProvider;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.BookVO;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.ErrorVO;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.impl.DataProviderImpl;
-import com.capgemini.starterkit.javafx.smallibrary.model.BookSearch;
+import com.capgemini.starterkit.javafx.smallibrary.model.BookManagement;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -77,7 +77,7 @@ public class BookManagementController {
 
 	private final DataProvider dataProvider = DataProvider.INSTANCE;
 
-	private final BookSearch model = new BookSearch();
+	private final BookManagement model = new BookManagement();
 
 	public BookManagementController() {
 	}

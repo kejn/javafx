@@ -1,5 +1,10 @@
 package com.capgemini.starterkit.javafx.imageviewer.dataprovider.data;
 
+/**
+ * Contain information about image file name.
+ *
+ * @author KNIEMCZY
+ */
 public class ImageFileVO {
 	private String name;
 
