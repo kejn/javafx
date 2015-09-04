@@ -1,5 +1,10 @@
 package com.capgemini.starterkit.javafx.smallibrary.dataprovider.data;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import org.json.JSONObject;
+
 public class AuthorVO {
 	private Long id;
 	private String firstName;
@@ -35,4 +40,19 @@ public class AuthorVO {
 		this.lastName = lastName;
 	}
 
+	public static AuthorVO fromString(String author) {
+		String[] firstAndLastName = author.split("\\s+");
+		int wordsInAuthor = firstAndLastName.length;
+		String firstNames = Arrays.asList(firstAndLastName).stream().limit(wordsInAuthor - 1)
+				.collect(Collectors.joining(" "));
+		String lastName = firstAndLastName[wordsInAuthor - 1];
+		return new AuthorVO(null, firstNames, lastName);
+	}
+
+	public static AuthorVO fromJSONObject(JSONObject jsonAuthor) {
+		Long authorId = jsonAuthor.getLong("id");
+		String authorFirstName = jsonAuthor.getString("firstName");
+		String authorLastName = jsonAuthor.getString("lastName");
+		return new AuthorVO(authorId, authorFirstName, authorLastName);
+	}
 }

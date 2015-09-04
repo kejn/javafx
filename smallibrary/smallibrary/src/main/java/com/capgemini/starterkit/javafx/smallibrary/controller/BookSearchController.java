@@ -1,7 +1,9 @@
 package com.capgemini.starterkit.javafx.smallibrary.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -11,12 +13,15 @@ import org.apache.log4j.Logger;
 
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.DataProvider;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.BookVO;
+import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.ErrorVO;
 import com.capgemini.starterkit.javafx.smallibrary.model.BookSearch;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -80,9 +85,7 @@ public class BookSearchController {
 
 	private void initializeForm() {
 		titleField.textProperty().bindBidirectional(model.titleProperty());
-		titleField.setPromptText(resources.getString("title.placeholder"));
 		authorsField.textProperty().bindBidirectional(model.authorProperty());
-		authorsField.setPromptText(resources.getString("authors.placeholder"));
 		searchButton.disableProperty().bind(titleField.textProperty().isEmpty());
 		addButton.disableProperty()
 				.bind(Bindings.or(titleField.textProperty().isEmpty(), authorsField.textProperty().isEmpty()));
@@ -103,7 +106,6 @@ public class BookSearchController {
 
 	@FXML
 	public void searchButtonAction() {
-		progressLabel.setText(resources.getString("label.searching"));
 		Task<Collection<BookVO>> backgroundTask = new Task<Collection<BookVO>>() {
 
 			@Override
@@ -116,6 +118,7 @@ public class BookSearchController {
 			@Override
 			protected void succeeded() {
 				LOG.debug("searchButtonAction succeeded() called");
+				setProgressMessage(null, false);
 				if (getValue() == null) {
 					return;
 				}
@@ -123,13 +126,16 @@ public class BookSearchController {
 				resultTable.getSortOrder().clear();
 			}
 
+			@Override
+			protected void failed() {
+				LOG.debug("searchButtonAction failed() called");
+				setProgressMessage(null, false);
+				showErrorAlert(ErrorVO.SEARCH, resources.getString("error.server"));
+			}
+
 		};
 
-		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
-		backgroundTask.setOnSucceeded(event -> {
-			progressLabel.textProperty().unbind();
-		});
-
+		setProgressMessage(resources.getString("label.searching"), true);
 		Thread thread = new Thread(backgroundTask);
 		thread.setDaemon(true);
 		thread.start();
@@ -137,19 +143,19 @@ public class BookSearchController {
 
 	@FXML
 	public void addButtonAction() {
-		progressLabel.setText(resources.getString("label.adding"));
 		Task<BookVO> backgroundTask = new Task<BookVO>() {
 
 			@Override
 			protected BookVO call() throws Exception {
 				LOG.debug("addButtonAction call() called");
-				BookVO result = dataProvider.addBook(model.getTitle(), model.getAuthor());
+				BookVO result = dataProvider.addBook(model.getTitle(), Arrays.asList(model.getAuthor().split(",")));
 				return result;
 			}
 
 			@Override
 			protected void succeeded() {
 				LOG.debug("addButtonAction succeeded() called");
+				setProgressMessage(null, false);
 				List<BookVO> result = model.getResult();
 				if (getValue() == null) {
 					return;
@@ -160,13 +166,13 @@ public class BookSearchController {
 			@Override
 			protected void failed() {
 				LOG.debug("addButtonAction failed() called");
+				setProgressMessage(null, false);
+				showErrorAlert(ErrorVO.ADD, resources.getString("error.server"));
 			}
 
 		};
 
-		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
-		backgroundTask.setOnSucceeded(event -> progressLabel.textProperty().unbind());
-
+		setProgressMessage(resources.getString("label.adding"), true);
 		Thread thread = new Thread(backgroundTask);
 		thread.setDaemon(true);
 		thread.start();
@@ -187,10 +193,8 @@ public class BookSearchController {
 			@Override
 			protected void succeeded() {
 				LOG.debug("deleteButtonAction succeeded() called");
+				setProgressMessage(null, false);
 				List<BookVO> result = model.getResult();
-				if (getValue().equals(Boolean.FALSE)) {
-					return;
-				}
 				result.remove(bookToDelete);
 				resultTable.getSelectionModel().clearSelection();
 			}
@@ -198,15 +202,32 @@ public class BookSearchController {
 			@Override
 			protected void failed() {
 				LOG.debug("deleteButtonAction failed() called");
+				setProgressMessage(null, false);
+				if (getException() instanceof IOException) {
+					showErrorAlert(ErrorVO.DELETE, resources.getString("error.server"));
+				} else {
+					showErrorAlert(ErrorVO.DELETE, getException().getMessage());
+				}
 			}
 
 		};
 
-		progressLabel.visibleProperty().bind(backgroundTask.runningProperty());
-		backgroundTask.setOnSucceeded(event -> progressLabel.textProperty().unbind());
-
+		setProgressMessage(resources.getString("label.deleting"), true);
 		Thread thread = new Thread(backgroundTask);
 		thread.setDaemon(true);
 		thread.start();
+	}
+
+	private void setProgressMessage(String message, boolean isVisible) {
+		progressLabel.setText(message);
+		progressLabel.setVisible(isVisible);
+	}
+
+	private void showErrorAlert(ErrorVO resourceErrorType, String moreInformation) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle(resources.getString("error.title"));
+		alert.setHeaderText(null);
+		alert.setContentText(resources.getString("error." + resourceErrorType) + "\n" + moreInformation);
+		alert.showAndWait();
 	}
 }

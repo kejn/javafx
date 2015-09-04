@@ -24,9 +24,9 @@
       </rowConstraints>
       <children>
       <Label minHeight="25.0" minWidth="100.0" text="%label.title" textAlignment="RIGHT" />
-      <TextField fx:id="titleField" layoutX="40.0" minHeight="25.0" GridPane.columnIndex="1" />
+      <TextField fx:id="titleField" layoutX="40.0" minHeight="25.0" promptText="%title.placeholder" GridPane.columnIndex="1" />
          <Label minHeight="25.0" text="%label.authors" textAlignment="RIGHT" GridPane.rowIndex="1" />
-         <TextField fx:id="authorsField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <TextField fx:id="authorsField" minHeight="25.0" promptText="%authors.placeholder" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       </children>
    </GridPane>
    <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="141.0" prefHeight="25.0" prefWidth="300.0" spacing="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="188.0" AnchorPane.topAnchor="141.0">
@@ -38,8 +38,8 @@
    </HBox>
   <TableView fx:id="resultTable" layoutX="14.0" layoutY="186.0" prefHeight="200.0" prefWidth="474.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="186.0">
     <columns>
-      <TableColumn fx:id="titleColumn" minWidth="260.0" prefWidth="260.0" text="%column.title" />
-      <TableColumn fx:id="authorsColumn" minWidth="210.0" prefWidth="210.0" text="%column.authors" />
+      <TableColumn fx:id="titleColumn" editable="false" minWidth="260.0" prefWidth="260.0" resizable="false" text="%column.title" />
+      <TableColumn fx:id="authorsColumn" editable="false" minWidth="210.0" prefWidth="210.0" resizable="false" text="%column.authors" />
     </columns>
   </TableView>
    <Label fx:id="progressLabel" alignment="CENTER_RIGHT" layoutX="331.0" layoutY="145.0" prefHeight="17.0" prefWidth="157.0" text="" textAlignment="RIGHT" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="145.0" />

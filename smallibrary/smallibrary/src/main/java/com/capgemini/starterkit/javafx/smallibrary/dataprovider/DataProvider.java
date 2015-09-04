@@ -1,5 +1,6 @@
 package com.capgemini.starterkit.javafx.smallibrary.dataprovider;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.BookVO;
@@ -9,10 +10,10 @@ public interface DataProvider {
 
 	DataProvider INSTANCE = new DataProviderImpl();
 
-	Collection<BookVO> findBooks(String titlePrefix);
+	Collection<BookVO> findBooks(String titlePrefix) throws IOException;
 
-	BookVO addBook(String title, String authors) throws InterruptedException;
+	BookVO addBook(String title, Collection<String> authors) throws IllegalArgumentException, IOException;
 
-	Boolean deleteBook(Long id);
+	Boolean deleteBook(Long id) throws IllegalArgumentException, IOException;
 
 }

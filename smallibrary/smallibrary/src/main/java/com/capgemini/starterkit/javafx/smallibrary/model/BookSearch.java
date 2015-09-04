@@ -57,9 +57,4 @@ public class BookSearch {
 	public String toString() {
 		return "PersonSearch [name=" + title + "author=" + author + ", result=" + result + "]";
 	}
-
-	public Object getAuthors() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
