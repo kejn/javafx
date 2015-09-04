@@ -5,6 +5,11 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
+/**
+ * Complete information about book author in database.
+ *
+ * @author KNIEMCZY
+ */
 public class AuthorVO {
 	private Long id;
 	private String firstName;
@@ -40,6 +45,13 @@ public class AuthorVO {
 		this.lastName = lastName;
 	}
 
+	/**
+	 * Converts <b>author</b> into AuthorVO object.
+	 *
+	 * @param author
+	 *            String representing authors first and last name.
+	 * @return AuthorVO object created from <b>author</b> String.
+	 */
 	public static AuthorVO fromString(String author) {
 		String[] firstAndLastName = author.split("\\s+");
 		int wordsInAuthor = firstAndLastName.length;
@@ -49,6 +61,13 @@ public class AuthorVO {
 		return new AuthorVO(null, firstNames, lastName);
 	}
 
+	/**
+	 * Converts <b>jsonAuthor</b> into AuthorVO object.
+	 *
+	 * @param jsonAuthor
+	 *            JSON object representing author.
+	 * @return AuthorVO object created from <b>jsonAuthor</b> object.
+	 */
 	public static AuthorVO fromJSONObject(JSONObject jsonAuthor) {
 		Long authorId = jsonAuthor.getLong("id");
 		String authorFirstName = jsonAuthor.getString("firstName");

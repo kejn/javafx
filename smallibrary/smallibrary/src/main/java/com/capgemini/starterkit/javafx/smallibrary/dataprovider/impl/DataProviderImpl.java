@@ -24,14 +24,33 @@ import com.capgemini.starterkit.javafx.smallibrary.dataprovider.DataProvider;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.AuthorVO;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.BookVO;
 
+/**
+ * Provides data for the application. based on database provided by server
+ * located on
+ * <a href="http://localhost:9721/workshop">http://localhost:9721/workshop</a>.
+ *
+ * @author KNIEMCZY
+ */
 public class DataProviderImpl implements DataProvider {
 
 	private static final Logger LOG = Logger.getLogger(DataProviderImpl.class);
 
+	/**
+	 * Project location of JSON configure file.
+	 */
+	private final String CONFIG_FILE = "src/main/resources/com/capgemini/starterkit/javafx/smallibrary/config/config.json";
+
+	/**
+	 * Root url for all REST services.
+	 */
 	private final String URL_BOOKS;
 
+	/**
+	 * Loads root url for all REST services from {@link #CONFIG_FILE} into
+	 * {@link #URL_BOOKS}.
+	 */
 	public DataProviderImpl() {
-		File configFile = new File("src/main/resources/com/capgemini/starterkit/javafx/smallibrary/config/config.json");
+		File configFile = new File(CONFIG_FILE);
 		BufferedReader reader = null;
 		JSONObject config = null;
 		String url = null;
@@ -169,7 +188,7 @@ public class DataProviderImpl implements DataProvider {
 	}
 
 	@Override
-	public Boolean deleteBook(Long id) throws IllegalArgumentException, IOException {
+	public Void deleteBook(Long id) throws IllegalArgumentException, IOException {
 		LOG.debug("Entering deleteBook(" + id + ")");
 		HttpURLConnection connection = null;
 		try {
@@ -194,7 +213,7 @@ public class DataProviderImpl implements DataProvider {
 			}
 		}
 		LOG.debug("Leaving deleteBook()");
-		return Boolean.TRUE;
+		return null;
 	}
 
 }

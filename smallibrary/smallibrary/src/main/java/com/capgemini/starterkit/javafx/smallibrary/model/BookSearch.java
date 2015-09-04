@@ -11,6 +11,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 
+/**
+ * Data displayed on the book search screen.
+ *
+ * @author KNIEMCZY
+ */
 public class BookSearch {
 	private final StringProperty title = new SimpleStringProperty();
 	private final StringProperty author = new SimpleStringProperty();
@@ -55,6 +60,6 @@ public class BookSearch {
 
 	@Override
 	public String toString() {
-		return "PersonSearch [name=" + title + "author=" + author + ", result=" + result + "]";
+		return "BookSearch [name=" + title + "author=" + author + ", result=" + result + "]";
 	}
 }

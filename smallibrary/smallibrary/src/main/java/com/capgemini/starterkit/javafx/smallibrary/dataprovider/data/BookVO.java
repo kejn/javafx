@@ -6,6 +6,11 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Complete information about book in database.
+ *
+ * @author KNIEMCZY
+ */
 public class BookVO {
 	private Long id;
 	private String title;
@@ -47,6 +52,13 @@ public class BookVO {
 		this.authors = authors;
 	}
 
+	/**
+	 * Converts <b>jsonBook</b> into BookVO object.
+	 *
+	 * @param jsonBook
+	 *            JSON object representing book.
+	 * @return BookVO object created from <b>jsonBook</b> object.
+	 */
 	public static BookVO fromJSONObject(JSONObject jsonBook) {
 		Long bookId = jsonBook.getLong("id");
 		String bookTitle = jsonBook.getString("title");

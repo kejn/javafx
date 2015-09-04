@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.DataProvider;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.BookVO;
 import com.capgemini.starterkit.javafx.smallibrary.dataprovider.data.ErrorVO;
+import com.capgemini.starterkit.javafx.smallibrary.dataprovider.impl.DataProviderImpl;
 import com.capgemini.starterkit.javafx.smallibrary.model.BookSearch;
 
 import javafx.beans.binding.Bindings;
@@ -29,9 +30,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-public class BookSearchController {
+/**
+ * Controller for book management.
+ *
+ * @author KNIEMCZY
+ */
+public class BookManagementController {
 
-	private static final Logger LOG = Logger.getLogger(BookSearchController.class);
+	private static final Logger LOG = Logger.getLogger(BookManagementController.class);
 
 	@FXML
 	private ResourceBundle resources;
@@ -73,7 +79,7 @@ public class BookSearchController {
 
 	private final BookSearch model = new BookSearch();
 
-	public BookSearchController() {
+	public BookManagementController() {
 	}
 
 	@FXML
@@ -83,6 +89,10 @@ public class BookSearchController {
 		LOG.debug("initializing -- finished");
 	}
 
+	/**
+	 * Sets bindings to text fields and buttons corresponding to application
+	 * form.
+	 */
 	private void initializeForm() {
 		titleField.textProperty().bindBidirectional(model.titleProperty());
 		authorsField.textProperty().bindBidirectional(model.authorProperty());
@@ -94,6 +104,9 @@ public class BookSearchController {
 		LOG.debug("form initialized");
 	}
 
+	/**
+	 * Sets binding between result table and model.
+	 */
 	private void initializeResultTable() {
 		titleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTitle()));
 		authorsColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthors()
@@ -104,10 +117,20 @@ public class BookSearchController {
 		LOG.debug("resultTable initialized");
 	}
 
+	/**
+	 * The JavaFX runtime calls this method when the <b>Search</b> button is
+	 * clicked. Shows label informing user about pending operation.
+	 */
 	@FXML
 	public void searchButtonAction() {
 		Task<Collection<BookVO>> backgroundTask = new Task<Collection<BookVO>>() {
 
+			/**
+			 * Calls {@link DataProviderImpl#findBooks(String)} in task thread.
+			 *
+			 * @return Collection of books from server database matching
+			 *         <b>title</b> provided by user.
+			 */
 			@Override
 			protected Collection<BookVO> call() throws Exception {
 				LOG.debug("searchButtonAction call() called");
@@ -115,10 +138,14 @@ public class BookSearchController {
 				return result;
 			}
 
+			/**
+			 * Hides label with progress message. If obtained result is not null
+			 * it is parsed into the result table.
+			 */
 			@Override
 			protected void succeeded() {
 				LOG.debug("searchButtonAction succeeded() called");
-				setProgressMessage(null, false);
+				resetProgressMessage();
 				if (getValue() == null) {
 					return;
 				}
@@ -126,10 +153,14 @@ public class BookSearchController {
 				resultTable.getSortOrder().clear();
 			}
 
+			/**
+			 * Hides label with progress message and pops up Alert describing
+			 * the error.
+			 */
 			@Override
 			protected void failed() {
 				LOG.debug("searchButtonAction failed() called");
-				setProgressMessage(null, false);
+				resetProgressMessage();
 				showErrorAlert(ErrorVO.SEARCH, resources.getString("error.server"));
 			}
 
@@ -141,10 +172,20 @@ public class BookSearchController {
 		thread.start();
 	}
 
+	/**
+	 * The JavaFX runtime calls this method when the <b>Add</b> button is
+	 * clicked. Shows label informing user about pending operation.
+	 */
 	@FXML
 	public void addButtonAction() {
 		Task<BookVO> backgroundTask = new Task<BookVO>() {
 
+			/**
+			 * Calls {@link DataProviderImpl#addBook(String,Collection)} in task
+			 * thread.
+			 *
+			 * @return BookVO object which was added to the server database.
+			 */
 			@Override
 			protected BookVO call() throws Exception {
 				LOG.debug("addButtonAction call() called");
@@ -152,21 +193,30 @@ public class BookSearchController {
 				return result;
 			}
 
+			/**
+			 * Hides label with progress message. If obtained result is not null
+			 * it is appended to the result table omitting unnecessary server
+			 * call.
+			 */
 			@Override
 			protected void succeeded() {
 				LOG.debug("addButtonAction succeeded() called");
-				setProgressMessage(null, false);
-				List<BookVO> result = model.getResult();
+				resetProgressMessage();
+				List<BookVO> books = model.getResult();
 				if (getValue() == null) {
 					return;
 				}
-				result.add(new BookVO(getValue()));
+				books.add(new BookVO(getValue()));
 			}
 
+			/**
+			 * Hides label with progress message and pops up Alert describing
+			 * the error.
+			 */
 			@Override
 			protected void failed() {
 				LOG.debug("addButtonAction failed() called");
-				setProgressMessage(null, false);
+				resetProgressMessage();
 				showErrorAlert(ErrorVO.ADD, resources.getString("error.server"));
 			}
 
@@ -181,28 +231,39 @@ public class BookSearchController {
 	@FXML
 	public void deleteButtonAction() {
 		BookVO bookToDelete = resultTable.getSelectionModel().getSelectedItem();
-		Task<Boolean> backgroundTask = new Task<Boolean>() {
+		Task<Void> backgroundTask = new Task<Void>() {
 
+			/**
+			 * Calls {@link DataProviderImpl#deleteBook(Long)} in task thread.
+			 */
 			@Override
-			protected Boolean call() throws Exception {
+			protected Void call() throws Exception {
 				LOG.debug("deleteButtonAction call() called");
-				Boolean result = dataProvider.deleteBook(bookToDelete.getId());
-				return result;
+				dataProvider.deleteBook(bookToDelete.getId());
+				return null;
 			}
 
+			/**
+			 * Hides label with progress message. Deletes selected book from the
+			 * result table omitting unnecessary server call.
+			 */
 			@Override
 			protected void succeeded() {
 				LOG.debug("deleteButtonAction succeeded() called");
-				setProgressMessage(null, false);
+				resetProgressMessage();
 				List<BookVO> result = model.getResult();
 				result.remove(bookToDelete);
 				resultTable.getSelectionModel().clearSelection();
 			}
 
+			/**
+			 * Hides label with progress message and pops up Alert describing
+			 * the error.
+			 */
 			@Override
 			protected void failed() {
 				LOG.debug("deleteButtonAction failed() called");
-				setProgressMessage(null, false);
+				resetProgressMessage();
 				if (getException() instanceof IOException) {
 					showErrorAlert(ErrorVO.DELETE, resources.getString("error.server"));
 				} else {
@@ -218,11 +279,35 @@ public class BookSearchController {
 		thread.start();
 	}
 
+	/**
+	 * Sets progress label message and makes it visible or not, depending on
+	 * <b>isVisible</b> parameter.
+	 *
+	 * @param message
+	 *            text to be set in progress label
+	 * @param isVisible
+	 *            if <code>true</code> the message will be shown.
+	 */
 	private void setProgressMessage(String message, boolean isVisible) {
 		progressLabel.setText(message);
 		progressLabel.setVisible(isVisible);
 	}
 
+	/**
+	 * Sets progress label message to <b>null</b> and makes it invisible.
+	 */
+	private void resetProgressMessage() {
+		setProgressMessage(null, false);
+	}
+
+	/**
+	 * Displays Alert with error message.
+	 * 
+	 * @param resourceErrorType
+	 *            defines type of operation error category
+	 * @param moreInformation
+	 *            gives more detailed information about the error.
+	 */
 	private void showErrorAlert(ErrorVO resourceErrorType, String moreInformation) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle(resources.getString("error.title"));

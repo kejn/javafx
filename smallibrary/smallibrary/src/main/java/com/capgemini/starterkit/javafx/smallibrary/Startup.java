@@ -11,6 +11,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Application starts here.
+ * 
+ * @author KNIEMCZY
+ */
 public class Startup extends Application {
 
 	private static final Logger LOG = Logger.getLogger(Startup.class);
